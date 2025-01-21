@@ -15,6 +15,15 @@ It’s no secret that Kubernetes can be both powerful and frustrating at times. 
 
 **The Pitfall**: Not specifying CPU and memory requirements in your resource manifests. By default, Kubernetes can’t guess what your containers need, so in the worst-case scenario, you might either get starved of resources or accidentally hog them without realizing it.
 
+**Context**:
+In Kubernetes, resource requests and limits are critical for efficient cluster management. Resource requests ensure that the scheduler reserves the appropriate amount of CPU and memory for each pod, guaranteeing that it has the necessary resources to operate. Resource limits cap the amount of CPU and memory a pod can use, preventing any single pod from consuming excessive resources and potentially starving other pods.
+
+When resource requests and limits are not set:
+
+ 1. Resource Starvation: Pods may get insufficient resources, leading to degraded performance or failures. This is because Kubernetes schedules pods based on these requests. Without them, the scheduler might place too many pods on a single node, leading to resource contention and performance bottlenecks.
+
+ 2. Resource Hoarding: Conversely, without limits, a pod might consume more than its fair share of resources, impacting the performance and stability of other pods on the same node. This can lead to issues such as other pods getting evicted or killed by the Out-Of-Memory (OOM) killer due to lack of available memory.
+
 **How to Avoid It**:
 - Start with modest `requests` (e.g., `100m` CPU, `128Mi` memory) and see how your app behaves.
 - Monitor real-world usage and refine your values; the [Horizontal Pod Autoscaler](https://kubernetes.io/docs/tasks/run-application/horizontal-pod-autoscale/) can help automate scaling based on metrics.
